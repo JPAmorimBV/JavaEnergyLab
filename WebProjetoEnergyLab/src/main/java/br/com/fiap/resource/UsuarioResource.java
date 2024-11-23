@@ -2,13 +2,14 @@ package br.com.fiap.resource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;  
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -49,19 +50,21 @@ public class UsuarioResource {
             );
 
             usuarioBO.cadastrarUsuario(usuario, cadastroDTO.getConfirmarSenha());
+            
+            // Retorna um objeto JSON em vez de uma string
             return Response.status(Response.Status.CREATED)
-                .entity("Usuário cadastrado com sucesso!")
+                .entity(Map.of("message", "Usuário cadastrado com sucesso!"))
                 .build();
 
         } catch (IllegalArgumentException e) {
-            e.printStackTrace(); // Log para debug
+            e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST)
-                .entity("Erro de validação: " + e.getMessage())
+                .entity(Map.of("error", "Erro de validação: " + e.getMessage()))
                 .build();
         } catch (SQLException e) {
-            e.printStackTrace(); // Log para debug
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("Erro interno ao cadastrar usuário: " + e.getMessage())
+                .entity(Map.of("error", "Erro interno ao cadastrar usuário: " + e.getMessage()))
                 .build();
         }
     }
